@@ -53,9 +53,9 @@ function UserStreakCard({
           </p>
         </div>
         <div
-          className={`flex h-9 min-w-[90px] flex-col justify-center rounded-full px-3 text-[0.7rem] font-semibold text-white ${accentClass}`}
+          className={`flex h-auto min-h-9 shrink-0 flex-col justify-center rounded-full px-4 py-1.5 text-[0.7rem] font-semibold text-white ${accentClass}`}
         >
-          <span className="uppercase tracking-[0.18em]">Complete GAPS</span>
+          <span className="whitespace-nowrap uppercase tracking-[0.18em]">Complete GAPS</span>
           <span className="text-[0.65rem]">
             {streaks.full.current} day
             {streaks.full.current === 1 ? "" : "s"}
@@ -104,7 +104,7 @@ export default async function StreaksPage() {
               GAPS Streaks
             </div>
             <h1 className="mt-3 text-2xl font-semibold tracking-tight text-rose-950 sm:text-3xl">
-              Gentle GAPS streak tracker
+              GAPS streak tracker
             </h1>
             <p className="mt-1 text-sm text-rose-700">
               See how consistently Jasmin &amp; Kelsey have been nourishing

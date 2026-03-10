@@ -63,7 +63,7 @@ export default function GateGuard({
   if (unlocked) {
     return (
       <>
-        <nav className="sticky top-0 z-10 flex justify-center gap-2 border-b border-rose-100 bg-white/80 py-2 backdrop-blur-sm">
+        <nav className="sticky top-0 z-10 flex justify-center gap-2 border-b border-rose-100 bg-white py-2">
           <Link
             href="/"
             className={`rounded-full px-4 py-2 text-sm font-semibold transition ${

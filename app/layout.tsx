@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "GAPS Daily Checklist",
   description:
-    "Gentle GAPS-inspired daily checklist for Jasmin and Kelsey",
+    "GAPS daily checklist for Jasmin and Kelsey",
 };
 
 export default function RootLayout({

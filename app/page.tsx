@@ -208,9 +208,8 @@ function UserChecklist({
                   )}
                 </span>
                 <span
-                  className={`inline-block text-[0.7rem] transition-transform ${
-                    isExpanded ? "rotate-180" : ""
-                  }`}
+                  className={`inline-block text-[0.7rem] transition-transform ${isExpanded ? "rotate-180" : ""
+                    }`}
                   aria-hidden
                 >
                   ▼
@@ -390,11 +389,11 @@ export default function Home() {
               GAPS Daily Care
             </div>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight text-rose-950 sm:text-4xl">
-              Gentle GAPS Checklist
+              GAPS Checklist
             </h1>
             <p className="mt-1 text-sm text-rose-700">
-              A soft space for Jasmin &amp; Kelsey to track nourishing GAPS
-              meals, supplements, and healing practices—together.
+              For Jasmin &amp; Kelsey to track nourishing GAPS
+              meals, supplements, and daily practices.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -483,11 +482,10 @@ export default function Home() {
                 </button>
                 <button
                   type="button"
-                  className={`rounded-full border px-3 py-1 font-medium shadow-sm transition ${
-                    effectiveDate >= todayKey
-                      ? "cursor-not-allowed border-rose-200 bg-rose-50 text-rose-300"
-                      : "border-rose-300 bg-white text-rose-800 hover:bg-rose-50"
-                  }`}
+                  className={`rounded-full border px-3 py-1 font-medium shadow-sm transition ${effectiveDate >= todayKey
+                    ? "cursor-not-allowed border-rose-200 bg-rose-50 text-rose-300"
+                    : "border-rose-300 bg-white text-rose-800 hover:bg-rose-50"
+                    }`}
                   onClick={() => {
                     if (!effectiveDate || effectiveDate >= todayKey) return;
                     const next = shiftDate(effectiveDate, 1);
