@@ -1,5 +1,28 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Supabase (production persistence)
+
+For local dev, checklist data is stored in `data/db.json`. To deploy (e.g. Vercel) with persistent data:
+
+1. Create a project at [supabase.com](https://supabase.com).
+2. In the Supabase **SQL Editor**, run the migration:
+   - Copy the contents of `supabase/migrations/001_checklist_days.sql` and run it.
+3. In **Project Settings → API**: copy the **Project URL** and the **service_role** key (keep it secret).
+4. Add environment variables (e.g. in Vercel or `.env.local`):
+   - `NEXT_PUBLIC_SUPABASE_URL` = your Project URL
+   - `SUPABASE_SERVICE_ROLE_KEY` = your service_role key
+
+With these set, the app uses Supabase for checklist data instead of the local file.
+
+**Migrate existing data from `data/db.json` to Supabase**
+
+1. Ensure `.env.local` has `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
+2. Run once from the project root:
+   ```bash
+   npm run migrate:supabase
+   ```
+   The script reads `data/db.json` and upserts every day’s checklist (Jasmin and Kelsey) into the `checklist_days` table. It does not delete or modify `data/db.json`.
+
 ## Getting Started
 
 First, run the development server:
