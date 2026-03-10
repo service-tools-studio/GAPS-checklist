@@ -117,12 +117,12 @@ export default async function StreaksPage() {
           <UserStreakCard
             name="Jasmin"
             streaks={jasminStreaks}
-            accentClass="bg-rose-500"
+            accentClass="bg-purple-400"
           />
           <UserStreakCard
             name="Kelsey"
             streaks={kelseyStreaks}
-            accentClass="bg-amber-400 text-amber-950"
+            accentClass="bg-pink-500"
           />
         </div>
       </main>

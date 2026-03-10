@@ -116,12 +116,14 @@ function UserChecklist({
   userChecklist,
   canEdit,
   onToggle,
+  headerAccentClass = "border-rose-200 text-rose-500",
 }: {
   userName: string;
   sections: TaskSection[];
   userChecklist: Record<string, boolean>;
   canEdit: boolean;
   onToggle: (taskId: string, completed: boolean) => void;
+  headerAccentClass?: string;
 }) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
@@ -133,10 +135,10 @@ function UserChecklist({
 
   return (
     <div className="rounded-2xl border border-rose-100 bg-white/80">
-      <h3 className="border-b border-rose-100 px-4 py-3 text-sm font-semibold uppercase tracking-wider text-rose-500">
+      <h3 className={`border-b px-4 py-3 text-sm font-semibold uppercase tracking-wider ${headerAccentClass}`}>
         {userName}&apos;s GAPS checklist
         {!canEdit && (
-          <span className="ml-2 text-xs font-normal normal-case text-rose-400">
+          <span className="ml-2 text-xs font-normal normal-case opacity-80">
             (view only)
           </span>
         )}
@@ -431,22 +433,22 @@ export default function Home() {
               Choose user
             </h2>
             <p className="mb-4 text-sm text-rose-700">
-              Sign in as Jasmin or Kelsey to gently track your GAPS protocol
+              Sign in as Jasmin or Kelsey to track your GAPS protocol
               for the day. You&apos;ll always be able to see each other&apos;s
-              progress.
+              progress... and streaks!
             </p>
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
                 onClick={() => handleLogin("jasmin")}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-rose-500 px-4 py-2 text-sm font-semibold text-rose-50 shadow-sm shadow-rose-300 transition hover:bg-rose-400 sm:flex-none"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-purple-400 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-purple-300 transition hover:bg-purple-300 sm:flex-none"
               >
                 Sign in as Jasmin
               </button>
               <button
                 type="button"
                 onClick={() => handleLogin("kelsey")}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-amber-400 px-4 py-2 text-sm font-semibold text-amber-950 shadow-sm shadow-amber-300 transition hover:bg-amber-300 sm:flex-none"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-pink-500 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-pink-400/50 transition hover:bg-pink-400 sm:flex-none"
               >
                 Sign in as Kelsey
               </button>
@@ -520,6 +522,7 @@ export default function Home() {
                       userChecklist={checklist.checklists.kelsey ?? {}}
                       canEdit={true}
                       onToggle={toggleTask}
+                      headerAccentClass="border-pink-400 text-pink-500"
                     />
                     <UserChecklist
                       userName="Jasmin"
@@ -527,6 +530,7 @@ export default function Home() {
                       userChecklist={checklist.checklists.jasmin ?? {}}
                       canEdit={false}
                       onToggle={toggleTask}
+                      headerAccentClass="border-purple-200 text-purple-600"
                     />
                   </>
                 ) : (
@@ -537,6 +541,7 @@ export default function Home() {
                       userChecklist={checklist.checklists.jasmin ?? {}}
                       canEdit={true}
                       onToggle={toggleTask}
+                      headerAccentClass="border-purple-200 text-purple-600"
                     />
                     <UserChecklist
                       userName="Kelsey"
@@ -544,6 +549,7 @@ export default function Home() {
                       userChecklist={checklist.checklists.kelsey ?? {}}
                       canEdit={false}
                       onToggle={toggleTask}
+                      headerAccentClass="border-pink-400 text-pink-500"
                     />
                   </>
                 )}
