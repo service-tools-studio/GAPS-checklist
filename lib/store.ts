@@ -71,7 +71,10 @@ const JASMIN_SECTIONS: TaskSection[] = [
       { id: "j_am_sleep_interrupted", label: "How many times sleep interrupted", inputType: "number" },
       { id: "j_am_quality_sleep", label: "Quality of sleep", inputType: "number", min: 1, max: 10 },
       { id: "j_am_mood_morning", label: "Mood in morning", inputType: "number", min: 1, max: 10 },
-      { id: "j_am_oz_water", label: "Oz of water", inputType: "number" },
+      { id: "j_am_word_mood", label: "Word for mood", inputType: "text" },
+      { id: "j_am_feel_physically", label: "How do you feel physically", inputType: "number", min: 1, max: 10 },
+      { id: "j_am_word_physically", label: "Word for feeling physically", inputType: "text" },
+      { id: "j_am_digestive", label: "Digestive enzyme" },
       {
         id: "j_am_meds",
         label: "Morning Medications & Supplements",
@@ -82,10 +85,6 @@ const JASMIN_SECTIONS: TaskSection[] = [
           { id: "j_am_meds_omega", label: "Omega" },
         ],
       },
-      { id: "j_am_word_mood", label: "Word for mood", inputType: "text" },
-      { id: "j_am_feel_physically", label: "How do you feel physically", inputType: "number", min: 1, max: 10 },
-      { id: "j_am_word_physically", label: "Word for feeling physically", inputType: "text" },
-      { id: "j_am_digestive", label: "Digestive enzyme" },
       {
         id: "j_am_squash",
         label: "Butternut squash",
@@ -105,6 +104,19 @@ const JASMIN_SECTIONS: TaskSection[] = [
           { id: "j_am_beef_fermented", label: "Added fermented veggies" },
         ],
       },
+    ],
+  },
+  {
+    title: "Water",
+    items: [
+      { id: "j_water_1", label: "1st 8oz water" },
+      { id: "j_water_2", label: "2nd 8oz water" },
+      { id: "j_water_3", label: "3rd 8oz water" },
+      { id: "j_water_4", label: "4th 8oz water" },
+      { id: "j_water_5", label: "5th 8oz water" },
+      { id: "j_water_6", label: "6th 8oz water" },
+      { id: "j_water_7", label: "7th 8oz water" },
+      { id: "j_water_8", label: "8th 8oz water" },
     ],
   },
   {
@@ -137,6 +149,13 @@ const JASMIN_SECTIONS: TaskSection[] = [
     ],
   },
   {
+    title: "In-between meals",
+    items: [
+      { id: "j_between_creams", label: "Coconut creams" },
+      { id: "j_between_caramels", label: "Coconut caramels" },
+    ],
+  },
+  {
     title: "Mid-day As-needed Medications",
     items: [
       { id: "j_midday_olanzapine", label: "Olanzapine" },
@@ -150,6 +169,7 @@ const JASMIN_SECTIONS: TaskSection[] = [
       { id: "j_detox_drybrush", label: "Dry brushing" },
       { id: "j_detox_epsom", label: "Epsom salt bath" },
       { id: "j_detox_sauna", label: "Sauna" },
+      { id: "j_detox_tea", label: "Detox tea" },
     ],
   },
   {
@@ -217,7 +237,6 @@ const KELSEY_SECTIONS: TaskSection[] = [
       { id: "k_am_sleep_interrupted", label: "How many times sleep interrupted", inputType: "number" },
       { id: "k_am_quality_sleep", label: "Quality of sleep", inputType: "number", min: 1, max: 10 },
       { id: "k_am_mood_morning", label: "Mood in morning", inputType: "number", min: 1, max: 10 },
-      { id: "k_am_oz_water", label: "Oz of water", inputType: "number" },
       { id: "k_am_word_mood", label: "Word for mood", inputType: "text" },
       { id: "k_am_feel_physically", label: "How do you feel physically", inputType: "number", min: 1, max: 10 },
       { id: "k_am_word_physically", label: "Word for feeling physically", inputType: "text" },
@@ -241,6 +260,19 @@ const KELSEY_SECTIONS: TaskSection[] = [
           { id: "k_am_beef_fermented", label: "Added fermented veggies" },
         ],
       },
+    ],
+  },
+  {
+    title: "Water",
+    items: [
+      { id: "k_water_1", label: "1st 8oz water" },
+      { id: "k_water_2", label: "2nd 8oz water" },
+      { id: "k_water_3", label: "3rd 8oz water" },
+      { id: "k_water_4", label: "4th 8oz water" },
+      { id: "k_water_5", label: "5th 8oz water" },
+      { id: "k_water_6", label: "6th 8oz water" },
+      { id: "k_water_7", label: "7th 8oz water" },
+      { id: "k_water_8", label: "8th 8oz water" },
     ],
   },
   {
@@ -273,11 +305,19 @@ const KELSEY_SECTIONS: TaskSection[] = [
     ],
   },
   {
+    title: "In-between meals",
+    items: [
+      { id: "k_between_creams", label: "Coconut creams" },
+      { id: "k_between_caramels", label: "Coconut caramels" },
+    ],
+  },
+  {
     title: "Detoxifying Practices",
     items: [
       { id: "k_detox_drybrush", label: "Dry brushing" },
       { id: "k_detox_epsom", label: "Epsom salt bath" },
       { id: "k_detox_sauna", label: "Sauna" },
+      { id: "k_detox_tea", label: "Detox tea" },
     ],
   },
   {

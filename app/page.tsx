@@ -389,8 +389,9 @@ export default function Home() {
       if (!res.ok) {
         throw new Error("Failed to update checklist");
       }
-      const data = (await res.json()) as ChecklistResponse;
-      setChecklist(data);
+      // We rely on the optimistic update above; no need to overwrite
+      // local state with the server response to avoid race conditions
+      // while typing into text/number fields.
     } catch (err) {
       console.error(err);
       setError("Unable to save change. Please try again.");
