@@ -3,7 +3,7 @@ import type { UserStreaks } from "@/lib/streaks";
 
 const LABELS: Record<keyof UserStreaks, string> = {
   full: "Complete GAPS day",
-  meals: "Meals (AM + Lunch + Dinner)",
+  meals: "Meals (Breakfast + Lunch + Dinner)",
   movement: "Movement",
   detox: "Detox practices",
 };

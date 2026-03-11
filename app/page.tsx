@@ -82,15 +82,85 @@ const OPTIONAL_TASK_IDS = new Set<string>([
   "j_movement_gym_cardio",
   "j_movement_gym_glutes",
   "j_movement_gym_fascia",
+  // Jasmin - Squash & Beef sub-items (all optional)
+  "j_am_squash_chicken",
+  "j_am_squash_egg",
+  "j_am_squash_avocado",
+  "j_am_squash_fermented",
+  "j_am_beef_egg",
+  "j_am_beef_avocado",
+  "j_am_beef_fermented",
+  "j_lunch_squash_chicken",
+  "j_lunch_squash_egg",
+  "j_lunch_squash_avocado",
+  "j_lunch_squash_fermented",
+  "j_lunch_beef_egg",
+  "j_lunch_beef_avocado",
+  "j_lunch_beef_fermented",
+  "j_dinner_squash_chicken",
+  "j_dinner_squash_egg",
+  "j_dinner_squash_avocado",
+  "j_dinner_squash_fermented",
+  "j_dinner_beef_chicken",
+  "j_dinner_beef_egg",
+  "j_dinner_beef_avocado",
+  "j_dinner_beef_fermented",
+  "j_am_squash_sourcream",
+  "j_am_beef_sourcream",
+  "j_lunch_squash_sourcream",
+  "j_lunch_beef_sourcream",
+  "j_dinner_squash_sourcream",
+  "j_dinner_beef_sourcream",
   // Kelsey - Movement -> Gym (all sub-items optional)
   "k_movement_gym_cardio",
   "k_movement_gym_glutes",
   "k_movement_gym_upper",
   "k_movement_gym_fascia",
+  // Kelsey - Squash & Beef sub-items (all optional)
+  "k_am_squash_chicken",
+  "k_am_squash_egg",
+  "k_am_squash_avocado",
+  "k_am_squash_fermented",
+  "k_am_beef_egg",
+  "k_am_beef_avocado",
+  "k_am_beef_fermented",
+  "k_lunch_squash_chicken",
+  "k_lunch_squash_egg",
+  "k_lunch_squash_avocado",
+  "k_lunch_squash_fermented",
+  "k_lunch_beef_egg",
+  "k_lunch_beef_avocado",
+  "k_lunch_beef_fermented",
+  "k_dinner_squash_chicken",
+  "k_dinner_squash_egg",
+  "k_dinner_squash_avocado",
+  "k_dinner_squash_fermented",
+  "k_dinner_beef_chicken",
+  "k_dinner_beef_egg",
+  "k_dinner_beef_avocado",
+  "k_dinner_beef_fermented",
+  "k_am_squash_sourcream",
+  "k_am_beef_sourcream",
+  "k_lunch_squash_sourcream",
+  "k_lunch_beef_sourcream",
+  "k_dinner_squash_sourcream",
+  "k_dinner_beef_sourcream",
 ]);
 
 const inputClass =
   "w-20 rounded-lg border border-rose-200 bg-rose-50/50 px-2 py-1.5 text-sm text-rose-900 placeholder:text-rose-400 focus:border-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-400/20 disabled:opacity-60";
+
+function anyDescendantChecked(
+  node: TaskNode,
+  getValue: (taskId: string) => boolean | number | string | undefined,
+): boolean {
+  if (!node.children?.length) return false;
+  return node.children.some((child) => {
+    const childType = child.inputType ?? "check";
+    if (childType === "check" && getValue(child.id) === true) return true;
+    return anyDescendantChecked(child, getValue);
+  });
+}
 
 function TaskRow({
   node,
@@ -120,7 +190,7 @@ function TaskRow({
             <input
               type="checkbox"
               className="h-4 w-4 cursor-pointer rounded border-rose-300 bg-rose-50 text-rose-500 outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2 focus-visible:ring-offset-rose-50 disabled:cursor-default disabled:opacity-60"
-              checked={value === true}
+              checked={value === true || (node.children != null && node.children.length > 0 && anyDescendantChecked(node, getValue))}
               disabled={disabled}
               onChange={(e) => onValueChange(node.id, e.target.checked)}
             />
@@ -204,7 +274,7 @@ function UserChecklist({
           const isExpanded = expanded[section.title] === true;
           const taskNodes = collectTaskNodes(section.items);
           const isMealSection =
-            section.title === "AM" ||
+            section.title === "Breakfast" ||
             section.title === "Lunch" ||
             section.title === "Dinner";
 
@@ -229,6 +299,8 @@ function UserChecklist({
                 return pairs.length === 0 || pairs.every(({ id, node }) => isTaskComplete(node, getValue(id)));
               });
             sectionComplete = nonMealComplete && mealOptionComplete;
+          } else if (section.title === "Detoxifying Practices" || section.title === "Snacks") {
+            sectionComplete = taskNodes.some(({ id, node }) => isTaskComplete(node, getValue(id)));
           } else {
             const required = taskNodes.filter(({ id }) => !OPTIONAL_TASK_IDS.has(id));
             sectionComplete =

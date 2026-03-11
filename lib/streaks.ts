@@ -89,11 +89,69 @@ const OPTIONAL_TASK_IDS = new Set<string>([
   "j_movement_gym_cardio",
   "j_movement_gym_glutes",
   "j_movement_gym_fascia",
+  // Jasmin - Squash & Beef sub-items (all optional)
+  "j_am_squash_chicken",
+  "j_am_squash_egg",
+  "j_am_squash_avocado",
+  "j_am_squash_fermented",
+  "j_am_beef_egg",
+  "j_am_beef_avocado",
+  "j_am_beef_fermented",
+  "j_lunch_squash_chicken",
+  "j_lunch_squash_egg",
+  "j_lunch_squash_avocado",
+  "j_lunch_squash_fermented",
+  "j_lunch_beef_egg",
+  "j_lunch_beef_avocado",
+  "j_lunch_beef_fermented",
+  "j_dinner_squash_chicken",
+  "j_dinner_squash_egg",
+  "j_dinner_squash_avocado",
+  "j_dinner_squash_fermented",
+  "j_dinner_beef_chicken",
+  "j_dinner_beef_egg",
+  "j_dinner_beef_avocado",
+  "j_dinner_beef_fermented",
+  "j_am_squash_sourcream",
+  "j_am_beef_sourcream",
+  "j_lunch_squash_sourcream",
+  "j_lunch_beef_sourcream",
+  "j_dinner_squash_sourcream",
+  "j_dinner_beef_sourcream",
   // Kelsey - Movement -> Gym (all sub-items optional)
   "k_movement_gym_cardio",
   "k_movement_gym_glutes",
   "k_movement_gym_upper",
   "k_movement_gym_fascia",
+  // Kelsey - Squash & Beef sub-items (all optional)
+  "k_am_squash_chicken",
+  "k_am_squash_egg",
+  "k_am_squash_avocado",
+  "k_am_squash_fermented",
+  "k_am_beef_egg",
+  "k_am_beef_avocado",
+  "k_am_beef_fermented",
+  "k_lunch_squash_chicken",
+  "k_lunch_squash_egg",
+  "k_lunch_squash_avocado",
+  "k_lunch_squash_fermented",
+  "k_lunch_beef_egg",
+  "k_lunch_beef_avocado",
+  "k_lunch_beef_fermented",
+  "k_dinner_squash_chicken",
+  "k_dinner_squash_egg",
+  "k_dinner_squash_avocado",
+  "k_dinner_squash_fermented",
+  "k_dinner_beef_chicken",
+  "k_dinner_beef_egg",
+  "k_dinner_beef_avocado",
+  "k_dinner_beef_fermented",
+  "k_am_squash_sourcream",
+  "k_am_beef_sourcream",
+  "k_lunch_squash_sourcream",
+  "k_lunch_beef_sourcream",
+  "k_dinner_squash_sourcream",
+  "k_dinner_beef_sourcream",
 ]);
 
 function isSectionComplete(
@@ -104,7 +162,7 @@ function isSectionComplete(
   const taskNodes = collectTaskNodesFromSectionItems(section.items);
 
   const isMealSection =
-    section.title === "AM" ||
+    section.title === "Breakfast" ||
     section.title === "Lunch" ||
     section.title === "Dinner";
 
@@ -130,6 +188,10 @@ function isSectionComplete(
     return nonMealComplete && mealOptionComplete;
   }
 
+  if (section.title === "Detoxifying Practices" || section.title === "Snacks") {
+    return taskNodes.some(({ id, node }) => isTaskComplete(node, getValue(id)));
+  }
+
   const required = taskNodes.filter(({ id }) => !OPTIONAL_TASK_IDS.has(id));
   return (
     required.length > 0 &&
@@ -152,7 +214,7 @@ async function evaluatePillarsForUserOnDate(
   }
 
   const meals =
-    (sectionMap.get("AM") ?? false) &&
+    (sectionMap.get("Breakfast") ?? false) &&
     (sectionMap.get("Lunch") ?? false) &&
     (sectionMap.get("Dinner") ?? false);
   const movement = sectionMap.get("Movement") ?? false;

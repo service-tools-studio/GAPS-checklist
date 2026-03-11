@@ -65,7 +65,7 @@ function flattenSectionIds(sections: TaskSection[]): string[] {
 
 const JASMIN_SECTIONS: TaskSection[] = [
   {
-    title: "AM",
+    title: "Breakfast",
     items: [
       { id: "j_am_hours_sleep", label: "Hours of sleep", inputType: "number" },
       { id: "j_am_sleep_interrupted", label: "How many times sleep interrupted", inputType: "number" },
@@ -93,6 +93,7 @@ const JASMIN_SECTIONS: TaskSection[] = [
           { id: "j_am_squash_egg", label: "Added egg" },
           { id: "j_am_squash_avocado", label: "Added avocado" },
           { id: "j_am_squash_fermented", label: "Added fermented veggies" },
+          { id: "j_am_squash_sourcream", label: "Added sour cream" },
         ],
       },
       {
@@ -102,21 +103,9 @@ const JASMIN_SECTIONS: TaskSection[] = [
           { id: "j_am_beef_egg", label: "Added egg" },
           { id: "j_am_beef_avocado", label: "Added avocado" },
           { id: "j_am_beef_fermented", label: "Added fermented veggies" },
+          { id: "j_am_beef_sourcream", label: "Added sour cream" },
         ],
       },
-    ],
-  },
-  {
-    title: "Water",
-    items: [
-      { id: "j_water_1", label: "1st 8oz water" },
-      { id: "j_water_2", label: "2nd 8oz water" },
-      { id: "j_water_3", label: "3rd 8oz water" },
-      { id: "j_water_4", label: "4th 8oz water" },
-      { id: "j_water_5", label: "5th 8oz water" },
-      { id: "j_water_6", label: "6th 8oz water" },
-      { id: "j_water_7", label: "7th 8oz water" },
-      { id: "j_water_8", label: "8th 8oz water" },
     ],
   },
   {
@@ -135,6 +124,7 @@ const JASMIN_SECTIONS: TaskSection[] = [
           { id: "j_lunch_squash_egg", label: "Added egg" },
           { id: "j_lunch_squash_avocado", label: "Added avocado" },
           { id: "j_lunch_squash_fermented", label: "Added fermented veggies" },
+          { id: "j_lunch_squash_sourcream", label: "Added sour cream" },
         ],
       },
       {
@@ -144,15 +134,49 @@ const JASMIN_SECTIONS: TaskSection[] = [
           { id: "j_lunch_beef_egg", label: "Added egg" },
           { id: "j_lunch_beef_avocado", label: "Added avocado" },
           { id: "j_lunch_beef_fermented", label: "Added fermented veggies" },
+          { id: "j_lunch_beef_sourcream", label: "Added sour cream" },
         ],
       },
     ],
   },
   {
-    title: "In-between meals",
+    title: "Dinner",
+    items: [
+      { id: "j_dinner_mood_night", label: "Mood at night", inputType: "number", min: 1, max: 10 },
+      { id: "j_dinner_word_mood", label: "Word for mood", inputType: "text" },
+      { id: "j_dinner_feel_physically", label: "How do you feel physically", inputType: "number", min: 1, max: 10 },
+      { id: "j_dinner_word_physically", label: "Word for feeling physically", inputType: "text" },
+      { id: "j_dinner_digestive", label: "Digestive enzyme" },
+      {
+        id: "j_dinner_squash",
+        label: "Butternut squash",
+        children: [
+          { id: "j_dinner_squash_chicken", label: "Added chicken" },
+          { id: "j_dinner_squash_egg", label: "Added egg" },
+          { id: "j_dinner_squash_avocado", label: "Added avocado" },
+          { id: "j_dinner_squash_fermented", label: "Added fermented veggies" },
+          { id: "j_dinner_squash_sourcream", label: "Added sour cream" },
+        ],
+      },
+      {
+        id: "j_dinner_beef",
+        label: "Beef",
+        children: [
+          { id: "j_dinner_beef_chicken", label: "Added chicken" },
+          { id: "j_dinner_beef_egg", label: "Added egg" },
+          { id: "j_dinner_beef_avocado", label: "Added avocado" },
+          { id: "j_dinner_beef_fermented", label: "Added fermented veggies" },
+          { id: "j_dinner_beef_sourcream", label: "Added sour cream" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Snacks",
     items: [
       { id: "j_between_creams", label: "Coconut creams" },
       { id: "j_between_caramels", label: "Coconut caramels" },
+      { id: "j_between_kefir", label: "Kefir" },
     ],
   },
   {
@@ -189,33 +213,16 @@ const JASMIN_SECTIONS: TaskSection[] = [
     ],
   },
   {
-    title: "Dinner",
+    title: "Water",
     items: [
-      { id: "j_dinner_mood_night", label: "Mood at night", inputType: "number", min: 1, max: 10 },
-      { id: "j_dinner_word_mood", label: "Word for mood", inputType: "text" },
-      { id: "j_dinner_feel_physically", label: "How do you feel physically", inputType: "number", min: 1, max: 10 },
-      { id: "j_dinner_word_physically", label: "Word for feeling physically", inputType: "text" },
-      { id: "j_dinner_digestive", label: "Digestive enzyme" },
-      {
-        id: "j_dinner_squash",
-        label: "Butternut squash",
-        children: [
-          { id: "j_dinner_squash_chicken", label: "Added chicken" },
-          { id: "j_dinner_squash_egg", label: "Added egg" },
-          { id: "j_dinner_squash_avocado", label: "Added avocado" },
-          { id: "j_dinner_squash_fermented", label: "Added fermented veggies" },
-        ],
-      },
-      {
-        id: "j_dinner_beef",
-        label: "Beef",
-        children: [
-          { id: "j_dinner_beef_chicken", label: "Added chicken" },
-          { id: "j_dinner_beef_egg", label: "Added egg" },
-          { id: "j_dinner_beef_avocado", label: "Added avocado" },
-          { id: "j_dinner_beef_fermented", label: "Added fermented veggies" },
-        ],
-      },
+      { id: "j_water_1", label: "1st 8oz water" },
+      { id: "j_water_2", label: "2nd 8oz water" },
+      { id: "j_water_3", label: "3rd 8oz water" },
+      { id: "j_water_4", label: "4th 8oz water" },
+      { id: "j_water_5", label: "5th 8oz water" },
+      { id: "j_water_6", label: "6th 8oz water" },
+      { id: "j_water_7", label: "7th 8oz water" },
+      { id: "j_water_8", label: "8th 8oz water" },
     ],
   },
   {
@@ -231,7 +238,7 @@ const JASMIN_SECTIONS: TaskSection[] = [
 
 const KELSEY_SECTIONS: TaskSection[] = [
   {
-    title: "AM",
+    title: "Breakfast",
     items: [
       { id: "k_am_hours_sleep", label: "Hours of sleep", inputType: "number" },
       { id: "k_am_sleep_interrupted", label: "How many times sleep interrupted", inputType: "number" },
@@ -249,6 +256,7 @@ const KELSEY_SECTIONS: TaskSection[] = [
           { id: "k_am_squash_egg", label: "Added egg" },
           { id: "k_am_squash_avocado", label: "Added avocado" },
           { id: "k_am_squash_fermented", label: "Added fermented veggies" },
+          { id: "k_am_squash_sourcream", label: "Added sour cream" },
         ],
       },
       {
@@ -258,21 +266,9 @@ const KELSEY_SECTIONS: TaskSection[] = [
           { id: "k_am_beef_egg", label: "Added egg" },
           { id: "k_am_beef_avocado", label: "Added avocado" },
           { id: "k_am_beef_fermented", label: "Added fermented veggies" },
+          { id: "k_am_beef_sourcream", label: "Added sour cream" },
         ],
       },
-    ],
-  },
-  {
-    title: "Water",
-    items: [
-      { id: "k_water_1", label: "1st 8oz water" },
-      { id: "k_water_2", label: "2nd 8oz water" },
-      { id: "k_water_3", label: "3rd 8oz water" },
-      { id: "k_water_4", label: "4th 8oz water" },
-      { id: "k_water_5", label: "5th 8oz water" },
-      { id: "k_water_6", label: "6th 8oz water" },
-      { id: "k_water_7", label: "7th 8oz water" },
-      { id: "k_water_8", label: "8th 8oz water" },
     ],
   },
   {
@@ -291,6 +287,7 @@ const KELSEY_SECTIONS: TaskSection[] = [
           { id: "k_lunch_squash_egg", label: "Added egg" },
           { id: "k_lunch_squash_avocado", label: "Added avocado" },
           { id: "k_lunch_squash_fermented", label: "Added fermented veggies" },
+          { id: "k_lunch_squash_sourcream", label: "Added sour cream" },
         ],
       },
       {
@@ -300,39 +297,7 @@ const KELSEY_SECTIONS: TaskSection[] = [
           { id: "k_lunch_beef_egg", label: "Added egg" },
           { id: "k_lunch_beef_avocado", label: "Added avocado" },
           { id: "k_lunch_beef_fermented", label: "Added fermented veggies" },
-        ],
-      },
-    ],
-  },
-  {
-    title: "In-between meals",
-    items: [
-      { id: "k_between_creams", label: "Coconut creams" },
-      { id: "k_between_caramels", label: "Coconut caramels" },
-    ],
-  },
-  {
-    title: "Detoxifying Practices",
-    items: [
-      { id: "k_detox_drybrush", label: "Dry brushing" },
-      { id: "k_detox_epsom", label: "Epsom salt bath" },
-      { id: "k_detox_sauna", label: "Sauna" },
-      { id: "k_detox_tea", label: "Detox tea" },
-    ],
-  },
-  {
-    title: "Movement",
-    items: [
-      { id: "k_movement_walk", label: "30 min walking" },
-      { id: "k_movement_stretch", label: "Stretching" },
-      {
-        id: "k_movement_gym",
-        label: "Gym",
-        children: [
-          { id: "k_movement_gym_cardio", label: "Cardio" },
-          { id: "k_movement_gym_glutes", label: "Glute program" },
-          { id: "k_movement_gym_upper", label: "Upper body lift" },
-          { id: "k_movement_gym_fascia", label: "Fascia maneuvers" },
+          { id: "k_lunch_beef_sourcream", label: "Added sour cream" },
         ],
       },
     ],
@@ -353,6 +318,7 @@ const KELSEY_SECTIONS: TaskSection[] = [
           { id: "k_dinner_squash_egg", label: "Added egg" },
           { id: "k_dinner_squash_avocado", label: "Added avocado" },
           { id: "k_dinner_squash_fermented", label: "Added fermented veggies" },
+          { id: "k_dinner_squash_sourcream", label: "Added sour cream" },
         ],
       },
       {
@@ -363,8 +329,61 @@ const KELSEY_SECTIONS: TaskSection[] = [
           { id: "k_dinner_beef_egg", label: "Added egg" },
           { id: "k_dinner_beef_avocado", label: "Added avocado" },
           { id: "k_dinner_beef_fermented", label: "Added fermented veggies" },
+          { id: "k_dinner_beef_sourcream", label: "Added sour cream" },
         ],
       },
+    ],
+  },
+  {
+    title: "Snacks",
+    items: [
+      { id: "k_between_creams", label: "Coconut creams" },
+      { id: "k_between_caramels", label: "Coconut caramels" },
+      { id: "k_between_kefir", label: "Kefir" },
+    ],
+  },
+  {
+    title: "Detoxifying Practices",
+    items: [
+      { id: "k_detox_drybrush", label: "Dry brushing" },
+      { id: "k_detox_epsom", label: "Epsom salt bath" },
+      { id: "k_detox_sauna", label: "Sauna" },
+      { id: "k_detox_tea", label: "Detox tea" },
+    ],
+  },
+  {
+    title: "Movement",
+    items: [
+      { id: "k_movement_walk", label: "30 min walking" },
+      { id: "k_movement_stretch", label: "Stretching/Shoulder PT" },
+      {
+        id: "k_movement_gym",
+        label: "Gym",
+        children: [
+          { id: "k_movement_gym_cardio", label: "Cardio" },
+          { id: "k_movement_gym_glutes", label: "Glute program" },
+          { id: "k_movement_gym_chest_bi", label: "Chest/biceps" },
+          { id: "k_movement_gym_chest_tri", label: "Chest/triceps" },
+          { id: "k_movement_gym_shoulder_bi", label: "Shoulder/biceps" },
+          { id: "k_movement_gym_shoulder_tri", label: "Shoulder/triceps" },
+          { id: "k_movement_gym_back_bi", label: "Back/biceps" },
+          { id: "k_movement_gym_back_tri", label: "Back/triceps" },
+          { id: "k_movement_gym_fascia", label: "Fascia maneuvers" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Water",
+    items: [
+      { id: "k_water_1", label: "1st 8oz water" },
+      { id: "k_water_2", label: "2nd 8oz water" },
+      { id: "k_water_3", label: "3rd 8oz water" },
+      { id: "k_water_4", label: "4th 8oz water" },
+      { id: "k_water_5", label: "5th 8oz water" },
+      { id: "k_water_6", label: "6th 8oz water" },
+      { id: "k_water_7", label: "7th 8oz water" },
+      { id: "k_water_8", label: "8th 8oz water" },
     ],
   },
   {
