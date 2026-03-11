@@ -82,7 +82,7 @@ export default function GateGuard({
                 : "bg-rose-100 text-rose-700 hover:bg-rose-200"
             }`}
           >
-            View our streaks!
+            Dashboard
           </Link>
         </nav>
         {children}

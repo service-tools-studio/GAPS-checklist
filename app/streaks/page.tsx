@@ -1,5 +1,7 @@
+import { getReflectionTimeSeries } from "@/lib/reflection-data";
 import { getStreaksForUser } from "@/lib/streaks";
 import type { UserStreaks } from "@/lib/streaks";
+import ReflectionChart from "./ReflectionChart";
 
 const LABELS: Record<keyof UserStreaks, string> = {
   full: "Complete GAPS day",
@@ -89,9 +91,10 @@ function UserStreakCard({
 }
 
 export default async function StreaksPage() {
-  const [jasminStreaks, kelseyStreaks] = await Promise.all([
+  const [jasminStreaks, kelseyStreaks, reflectionData] = await Promise.all([
     getStreaksForUser("jasmin"),
     getStreaksForUser("kelsey"),
+    getReflectionTimeSeries(),
   ]);
 
   return (
@@ -101,30 +104,52 @@ export default async function StreaksPage() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-rose-600">
               <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
-              GAPS Streaks
+              Dashboard
             </div>
             <h1 className="mt-3 text-2xl font-semibold tracking-tight text-rose-950 sm:text-3xl">
-              GAPS streak tracker
+              GAPS Dashboard
             </h1>
             <p className="mt-1 text-sm text-rose-700">
-              See how consistently Jasmin &amp; Kelsey have been nourishing
-              themselves across meals, movement, and detoxifying practices.
+              Streaks and reflection over time for Jasmin &amp; Kelsey.
             </p>
           </div>
         </header>
 
-        <div className="flex flex-col gap-4 sm:flex-row">
-          <UserStreakCard
-            name="Jasmin"
-            streaks={jasminStreaks}
-            accentClass="bg-purple-400"
-          />
-          <UserStreakCard
-            name="Kelsey"
-            streaks={kelseyStreaks}
-            accentClass="bg-pink-500"
-          />
-        </div>
+        <section className="mb-8">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-rose-500">
+            Streaks
+          </h2>
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <UserStreakCard
+              name="Jasmin"
+              streaks={jasminStreaks}
+              accentClass="bg-purple-400"
+            />
+            <UserStreakCard
+              name="Kelsey"
+              streaks={kelseyStreaks}
+              accentClass="bg-pink-500"
+            />
+          </div>
+        </section>
+
+        <section>
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-rose-500">
+            Reflection (mood &amp; physical feeling)
+          </h2>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <ReflectionChart
+              data={reflectionData}
+              user="Jasmin"
+              accentClass="text-purple-500"
+            />
+            <ReflectionChart
+              data={reflectionData}
+              user="Kelsey"
+              accentClass="text-pink-500"
+            />
+          </div>
+        </section>
       </main>
     </div>
   );
