@@ -18,6 +18,10 @@ export type TaskNode = {
   id: string;
   label: string;
   children?: TaskNode[];
+  /** 'check' = checkbox (default), 'number' = number input, 'text' = text input */
+  inputType?: "check" | "number" | "text";
+  min?: number;
+  max?: number;
 };
 
 export type TaskSection = {
@@ -25,7 +29,7 @@ export type TaskSection = {
   items: TaskNode[];
 };
 
-export type ChecklistState = Record<UserId, Record<string, boolean>>;
+export type ChecklistState = Record<UserId, Record<string, boolean | number | string>>;
 
 type DbShape = {
   users: User[];
@@ -63,7 +67,11 @@ const JASMIN_SECTIONS: TaskSection[] = [
   {
     title: "AM",
     items: [
-      { id: "j_am_sleep", label: "Did I get enough sleep?" },
+      { id: "j_am_hours_sleep", label: "Hours of sleep", inputType: "number" },
+      { id: "j_am_sleep_interrupted", label: "How many times sleep interrupted", inputType: "number" },
+      { id: "j_am_quality_sleep", label: "Quality of sleep", inputType: "number", min: 1, max: 10 },
+      { id: "j_am_mood_morning", label: "Mood in morning", inputType: "number", min: 1, max: 10 },
+      { id: "j_am_oz_water", label: "Oz of water", inputType: "number" },
       {
         id: "j_am_meds",
         label: "Morning Medications & Supplements",
@@ -74,11 +82,9 @@ const JASMIN_SECTIONS: TaskSection[] = [
           { id: "j_am_meds_omega", label: "Omega" },
         ],
       },
-      {
-        id: "j_am_water",
-        label: "Water",
-        children: [{ id: "j_am_water_minerals", label: "With minerals" }],
-      },
+      { id: "j_am_word_mood", label: "Word for mood", inputType: "text" },
+      { id: "j_am_feel_physically", label: "How do you feel physically", inputType: "number", min: 1, max: 10 },
+      { id: "j_am_word_physically", label: "Word for feeling physically", inputType: "text" },
       { id: "j_am_digestive", label: "Digestive enzyme" },
       {
         id: "j_am_squash",
@@ -104,11 +110,10 @@ const JASMIN_SECTIONS: TaskSection[] = [
   {
     title: "Lunch",
     items: [
-      {
-        id: "j_lunch_water",
-        label: "Water",
-        children: [{ id: "j_lunch_water_minerals", label: "With minerals" }],
-      },
+      { id: "j_lunch_mood_midday", label: "Mood midday", inputType: "number", min: 1, max: 10 },
+      { id: "j_lunch_word_mood", label: "Word for mood", inputType: "text" },
+      { id: "j_lunch_feel_physically", label: "How do you feel physically", inputType: "number", min: 1, max: 10 },
+      { id: "j_lunch_word_physically", label: "Word for feeling physically", inputType: "text" },
       { id: "j_lunch_digestive", label: "Digestive enzyme" },
       {
         id: "j_lunch_squash",
@@ -166,11 +171,10 @@ const JASMIN_SECTIONS: TaskSection[] = [
   {
     title: "Dinner",
     items: [
-      {
-        id: "j_dinner_water",
-        label: "Water",
-        children: [{ id: "j_dinner_water_minerals", label: "With minerals" }],
-      },
+      { id: "j_dinner_mood_night", label: "Mood at night", inputType: "number", min: 1, max: 10 },
+      { id: "j_dinner_word_mood", label: "Word for mood", inputType: "text" },
+      { id: "j_dinner_feel_physically", label: "How do you feel physically", inputType: "number", min: 1, max: 10 },
+      { id: "j_dinner_word_physically", label: "Word for feeling physically", inputType: "text" },
       { id: "j_dinner_digestive", label: "Digestive enzyme" },
       {
         id: "j_dinner_squash",
@@ -209,21 +213,14 @@ const KELSEY_SECTIONS: TaskSection[] = [
   {
     title: "AM",
     items: [
-      { id: "k_am_sleep", label: "Did I get enough sleep?" },
-      {
-        id: "k_am_meds",
-        label: "Morning Medications & Supplements",
-        children: [
-          { id: "k_am_meds_testosterone", label: "Testosterone" },
-          { id: "k_am_meds_estrogen", label: "Estrogen" },
-          { id: "k_am_meds_omega", label: "Omega" },
-        ],
-      },
-      {
-        id: "k_am_water",
-        label: "Water",
-        children: [{ id: "k_am_water_minerals", label: "With minerals" }],
-      },
+      { id: "k_am_hours_sleep", label: "Hours of sleep", inputType: "number" },
+      { id: "k_am_sleep_interrupted", label: "How many times sleep interrupted", inputType: "number" },
+      { id: "k_am_quality_sleep", label: "Quality of sleep", inputType: "number", min: 1, max: 10 },
+      { id: "k_am_mood_morning", label: "Mood in morning", inputType: "number", min: 1, max: 10 },
+      { id: "k_am_oz_water", label: "Oz of water", inputType: "number" },
+      { id: "k_am_word_mood", label: "Word for mood", inputType: "text" },
+      { id: "k_am_feel_physically", label: "How do you feel physically", inputType: "number", min: 1, max: 10 },
+      { id: "k_am_word_physically", label: "Word for feeling physically", inputType: "text" },
       { id: "k_am_digestive", label: "Digestive enzyme" },
       {
         id: "k_am_squash",
@@ -249,11 +246,10 @@ const KELSEY_SECTIONS: TaskSection[] = [
   {
     title: "Lunch",
     items: [
-      {
-        id: "k_lunch_water",
-        label: "Water",
-        children: [{ id: "k_lunch_water_minerals", label: "With minerals" }],
-      },
+      { id: "k_lunch_mood_midday", label: "Mood midday", inputType: "number", min: 1, max: 10 },
+      { id: "k_lunch_word_mood", label: "Word for mood", inputType: "text" },
+      { id: "k_lunch_feel_physically", label: "How do you feel physically", inputType: "number", min: 1, max: 10 },
+      { id: "k_lunch_word_physically", label: "Word for feeling physically", inputType: "text" },
       { id: "k_lunch_digestive", label: "Digestive enzyme" },
       {
         id: "k_lunch_squash",
@@ -304,11 +300,10 @@ const KELSEY_SECTIONS: TaskSection[] = [
   {
     title: "Dinner",
     items: [
-      {
-        id: "k_dinner_water",
-        label: "Water",
-        children: [{ id: "k_dinner_water_minerals", label: "With minerals" }],
-      },
+      { id: "k_dinner_mood_night", label: "Mood at night", inputType: "number", min: 1, max: 10 },
+      { id: "k_dinner_word_mood", label: "Word for mood", inputType: "text" },
+      { id: "k_dinner_feel_physically", label: "How do you feel physically", inputType: "number", min: 1, max: 10 },
+      { id: "k_dinner_word_physically", label: "Word for feeling physically", inputType: "text" },
       { id: "k_dinner_digestive", label: "Digestive enzyme" },
       {
         id: "k_dinner_squash",
@@ -333,12 +328,15 @@ const KELSEY_SECTIONS: TaskSection[] = [
     ],
   },
   {
-    title: "Evening Medications & Supplements",
+    title: "Medications & Supplements",
     items: [
-      { id: "k_evening_progesterone", label: "Progesterone" },
-      { id: "k_evening_magnesium", label: "Magnesium" },
-      { id: "k_evening_vitamind", label: "Vitamin D" },
-      { id: "k_evening_carnitine", label: "L-carnitine" },
+      { id: "k_meds_testosterone", label: "Testosterone" },
+      { id: "k_meds_estrogen", label: "Estrogen" },
+      { id: "k_meds_omega", label: "Omega" },
+      { id: "k_meds_progesterone", label: "Progesterone" },
+      { id: "k_meds_magnesium", label: "Magnesium" },
+      { id: "k_meds_vitamind", label: "Vitamin D" },
+      { id: "k_meds_carnitine", label: "L-carnitine" },
     ],
   },
 ];
@@ -480,9 +478,9 @@ export async function updateChecklistEntry(options: {
   dateKey: string;
   userId: UserId;
   taskId: string;
-  completed: boolean;
+  value: boolean | number | string;
 }): Promise<ChecklistState> {
-  const { dateKey, userId, taskId, completed } = options;
+  const { dateKey, userId, taskId, value } = options;
   const validIds = new Set(getAllTaskIdsForUser(userId));
   if (!validIds.has(taskId)) {
     throw new Error("Invalid task for user");
@@ -490,11 +488,11 @@ export async function updateChecklistEntry(options: {
 
   if (isSupabaseConfigured()) {
     const state = await getChecklistStateFromSupabase(dateKey);
-    const userCompleted = { ...(state[userId] ?? {}), [taskId]: completed };
-    await upsertChecklistStateInSupabase(dateKey, userId, userCompleted);
+    const userValues = { ...(state[userId] ?? {}), [taskId]: value };
+    await upsertChecklistStateInSupabase(dateKey, userId, userValues);
     return {
       ...state,
-      [userId]: userCompleted,
+      [userId]: userValues,
     };
   }
 
@@ -505,7 +503,7 @@ export async function updateChecklistEntry(options: {
   }
 
   const userChecklist = db.checklists[dateKey][userId] ?? {};
-  userChecklist[taskId] = completed;
+  userChecklist[taskId] = value;
   db.checklists[dateKey][userId] = userChecklist;
 
   writeDb(db);

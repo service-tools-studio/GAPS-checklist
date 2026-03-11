@@ -3,6 +3,7 @@ import {
   getChecklistForDate,
   getTasksForUser,
   type ChecklistState,
+  type TaskNode,
   type TaskSection,
   type UserId,
 } from "./store";
@@ -46,6 +47,31 @@ function collectTaskIdsFromSectionItems(items: TaskSection["items"]): string[] {
   return ids;
 }
 
+function collectTaskNodesFromSectionItems(items: TaskSection["items"]): { id: string; node: TaskNode }[] {
+  const out: { id: string; node: TaskNode }[] = [];
+  const stack = [...items];
+  while (stack.length) {
+    const node = stack.pop()!;
+    out.push({ id: node.id, node });
+    if (node.children?.length) {
+      stack.push(...node.children);
+    }
+  }
+  return out;
+}
+
+function isTaskComplete(node: TaskNode, value: boolean | number | string | undefined): boolean {
+  if (value === undefined || value === null) return false;
+  if (node.inputType === "number") {
+    if (typeof value !== "number" || Number.isNaN(value)) return false;
+    if (node.min != null && value < node.min) return false;
+    if (node.max != null && value > node.max) return false;
+    return true;
+  }
+  if (node.inputType === "text") return typeof value === "string" && value.trim() !== "";
+  return value === true;
+}
+
 const OPTIONAL_TASK_IDS = new Set<string>([
   // Jasmin - AM meds
   "j_am_meds_olanzapine",
@@ -74,9 +100,8 @@ function isSectionComplete(
   section: TaskSection,
   userChecklist: ChecklistState[UserId],
 ): boolean {
-  const getChecked = (taskId: string) => userChecklist?.[taskId] ?? false;
-
-  const sectionTaskIds = collectTaskIdsFromSectionItems(section.items);
+  const getValue = (taskId: string) => userChecklist?.[taskId];
+  const taskNodes = collectTaskNodesFromSectionItems(section.items);
 
   const isMealSection =
     section.title === "AM" ||
@@ -87,38 +112,28 @@ function isSectionComplete(
     const mealNodes = section.items.filter(
       (node) => node.id.endsWith("_squash") || node.id.endsWith("_beef"),
     );
-
-    const allMealIds: string[] = [];
-    for (const node of mealNodes) {
-      allMealIds.push(...collectTaskIdsFromSectionItems([node]));
-    }
-
-    const requiredNonMealTaskIds = sectionTaskIds.filter(
-      (id) => !allMealIds.includes(id) && !OPTIONAL_TASK_IDS.has(id),
+    const allMealIds = new Set(mealNodes.flatMap((n) => collectTaskIdsFromSectionItems([n])));
+    const requiredNonMeal = taskNodes.filter(
+      ({ id }) => !allMealIds.has(id) && !OPTIONAL_TASK_IDS.has(id),
     );
-
     const nonMealComplete =
-      requiredNonMealTaskIds.length === 0 ||
-      requiredNonMealTaskIds.every((id) => getChecked(id));
-
+      requiredNonMeal.length === 0 ||
+      requiredNonMeal.every(({ id, node }) => isTaskComplete(node, getValue(id)));
     const mealOptionComplete =
       mealNodes.length === 0 ||
       mealNodes.some((node) => {
-        const ids = collectTaskIdsFromSectionItems([node]).filter(
-          (id) => !OPTIONAL_TASK_IDS.has(id),
+        const pairs = collectTaskNodesFromSectionItems([node]).filter(
+          ({ id }) => !OPTIONAL_TASK_IDS.has(id),
         );
-        return ids.length === 0 || ids.every((id) => getChecked(id));
+        return pairs.length === 0 || pairs.every(({ id, node }) => isTaskComplete(node, getValue(id)));
       });
-
     return nonMealComplete && mealOptionComplete;
   }
 
-  const requiredTaskIds = sectionTaskIds.filter(
-    (id) => !OPTIONAL_TASK_IDS.has(id),
-  );
+  const required = taskNodes.filter(({ id }) => !OPTIONAL_TASK_IDS.has(id));
   return (
-    requiredTaskIds.length > 0 &&
-    requiredTaskIds.every((id) => getChecked(id))
+    required.length > 0 &&
+    required.every(({ id, node }) => isTaskComplete(node, getValue(id)))
   );
 }
 

@@ -13,6 +13,9 @@ type TaskNode = {
   id: string;
   label: string;
   children?: TaskNode[];
+  inputType?: "check" | "number" | "text";
+  min?: number;
+  max?: number;
 };
 
 type TaskSection = {
@@ -20,7 +23,7 @@ type TaskSection = {
   items: TaskNode[];
 };
 
-type ChecklistState = Record<UserId, Record<string, boolean>>;
+type ChecklistState = Record<UserId, Record<string, boolean | number | string>>;
 
 type ChecklistResponse = {
   date: string;
@@ -39,6 +42,27 @@ function collectTaskIds(nodes: TaskNode[]): string[] {
     }
   }
   return ids;
+}
+
+function collectTaskNodes(nodes: TaskNode[]): { id: string; node: TaskNode }[] {
+  const out: { id: string; node: TaskNode }[] = [];
+  for (const node of nodes) {
+    out.push({ id: node.id, node });
+    if (node.children?.length) out.push(...collectTaskNodes(node.children));
+  }
+  return out;
+}
+
+function isTaskComplete(node: TaskNode, value: boolean | number | string | undefined): boolean {
+  if (value === undefined || value === null) return false;
+  if (node.inputType === "number") {
+    if (typeof value !== "number" || Number.isNaN(value)) return false;
+    if (node.min != null && value < node.min) return false;
+    if (node.max != null && value > node.max) return false;
+    return true;
+  }
+  if (node.inputType === "text") return typeof value === "string" && value.trim() !== "";
+  return value === true;
 }
 
 const OPTIONAL_TASK_IDS = new Set<string>([
@@ -65,44 +89,76 @@ const OPTIONAL_TASK_IDS = new Set<string>([
   "k_movement_gym_fascia",
 ]);
 
+const inputClass =
+  "w-20 rounded-lg border border-rose-200 bg-rose-50/50 px-2 py-1.5 text-sm text-rose-900 placeholder:text-rose-400 focus:border-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-400/20 disabled:opacity-60";
+
 function TaskRow({
   node,
-  getChecked,
+  getValue,
   disabled,
-  onToggle,
+  onValueChange,
   depth = 0,
 }: {
   node: TaskNode;
-  getChecked: (taskId: string) => boolean;
+  getValue: (taskId: string) => boolean | number | string | undefined;
   disabled: boolean;
-  onToggle: (taskId: string, completed: boolean) => void;
+  onValueChange: (taskId: string, value: boolean | number | string) => void;
   depth?: number;
 }) {
-  const checked = getChecked(node.id);
+  const type = node.inputType ?? "check";
+  const value = getValue(node.id);
+
   return (
     <>
       <div
-        className="flex items-center gap-2 py-1.5"
+        className="flex flex-wrap items-center gap-2 py-1.5"
         style={{ paddingLeft: depth * 20 }}
       >
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-rose-900">
+        <span className="min-w-0 flex-1 text-sm text-rose-900">{node.label}</span>
+        {type === "check" && (
+          <label className="flex cursor-pointer items-center gap-2">
+            <input
+              type="checkbox"
+              className="h-4 w-4 cursor-pointer rounded border-rose-300 bg-rose-50 text-rose-500 outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2 focus-visible:ring-offset-rose-50 disabled:cursor-default disabled:opacity-60"
+              checked={value === true}
+              disabled={disabled}
+              onChange={(e) => onValueChange(node.id, e.target.checked)}
+            />
+          </label>
+        )}
+        {type === "number" && (
           <input
-            type="checkbox"
-            className="h-4 w-4 cursor-pointer rounded border-rose-300 bg-rose-50 text-rose-500 outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2 focus-visible:ring-offset-rose-50 disabled:cursor-default disabled:opacity-60"
-            checked={checked}
+            type="number"
+            className={node.max != null ? `${inputClass} w-14` : inputClass}
+            min={node.min}
+            max={node.max}
+            value={typeof value === "number" && !Number.isNaN(value) ? value : ""}
+            placeholder={node.max != null ? `${node.min}-${node.max}` : ""}
             disabled={disabled}
-            onChange={(e) => onToggle(node.id, e.target.checked)}
+            onChange={(e) => {
+              const raw = e.target.value;
+              onValueChange(node.id, raw === "" ? "" : Number(raw));
+            }}
           />
-          <span>{node.label}</span>
-        </label>
+        )}
+        {type === "text" && (
+          <input
+            type="text"
+            className={`${inputClass} min-w-[120px] max-w-[200px]`}
+            value={typeof value === "string" ? value : ""}
+            placeholder=""
+            disabled={disabled}
+            onChange={(e) => onValueChange(node.id, e.target.value)}
+          />
+        )}
       </div>
       {node.children?.map((child) => (
         <TaskRow
           key={child.id}
           node={child}
-          getChecked={getChecked}
+          getValue={getValue}
           disabled={disabled}
-          onToggle={onToggle}
+          onValueChange={onValueChange}
           depth={depth + 1}
         />
       ))}
@@ -115,19 +171,19 @@ function UserChecklist({
   sections,
   userChecklist,
   canEdit,
-  onToggle,
+  onValueChange,
   headerAccentClass = "border-rose-200 text-rose-500",
 }: {
   userName: string;
   sections: TaskSection[];
-  userChecklist: Record<string, boolean>;
+  userChecklist: Record<string, boolean | number | string>;
   canEdit: boolean;
-  onToggle: (taskId: string, completed: boolean) => void;
+  onValueChange: (taskId: string, value: boolean | number | string) => void;
   headerAccentClass?: string;
 }) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
-  const getChecked = (taskId: string) => userChecklist[taskId] ?? false;
+  const getValue = (taskId: string) => userChecklist[taskId];
 
   const toggleSection = (title: string) => {
     setExpanded((prev) => ({ ...prev, [title]: !prev[title] }));
@@ -146,8 +202,7 @@ function UserChecklist({
       <div className="max-h-[70vh] overflow-y-auto p-4">
         {sections.map((section) => {
           const isExpanded = expanded[section.title] === true;
-          const sectionTaskIds = collectTaskIds(section.items);
-
+          const taskNodes = collectTaskNodes(section.items);
           const isMealSection =
             section.title === "AM" ||
             section.title === "Lunch" ||
@@ -160,39 +215,25 @@ function UserChecklist({
               (node) =>
                 node.id.endsWith("_squash") || node.id.endsWith("_beef"),
             );
-
-            const allMealIds: string[] = [];
-            for (const node of mealNodes) {
-              allMealIds.push(...collectTaskIds([node]));
-            }
-
-            const requiredNonMealTaskIds = sectionTaskIds.filter(
-              (id) => !allMealIds.includes(id) && !OPTIONAL_TASK_IDS.has(id),
+            const allMealIds = new Set(mealNodes.flatMap((n) => collectTaskIds([n])));
+            const requiredNonMeal = taskNodes.filter(
+              ({ id }) => !allMealIds.has(id) && !OPTIONAL_TASK_IDS.has(id),
             );
-
             const nonMealComplete =
-              requiredNonMealTaskIds.length === 0 ||
-              requiredNonMealTaskIds.every((id) => getChecked(id));
-
+              requiredNonMeal.length === 0 ||
+              requiredNonMeal.every(({ id, node }) => isTaskComplete(node, getValue(id)));
             const mealOptionComplete =
               mealNodes.length === 0 ||
               mealNodes.some((node) => {
-                const ids = collectTaskIds([node]).filter(
-                  (id) => !OPTIONAL_TASK_IDS.has(id),
-                );
-                return (
-                  ids.length === 0 || ids.every((id) => getChecked(id))
-                );
+                const pairs = collectTaskNodes([node]).filter(({ id }) => !OPTIONAL_TASK_IDS.has(id));
+                return pairs.length === 0 || pairs.every(({ id, node }) => isTaskComplete(node, getValue(id)));
               });
-
             sectionComplete = nonMealComplete && mealOptionComplete;
           } else {
-            const requiredTaskIds = sectionTaskIds.filter(
-              (id) => !OPTIONAL_TASK_IDS.has(id),
-            );
+            const required = taskNodes.filter(({ id }) => !OPTIONAL_TASK_IDS.has(id));
             sectionComplete =
-              requiredTaskIds.length > 0 &&
-              requiredTaskIds.every((id) => getChecked(id));
+              required.length > 0 &&
+              required.every(({ id, node }) => isTaskComplete(node, getValue(id)));
           }
           return (
             <div key={section.title} className="mb-4">
@@ -210,8 +251,7 @@ function UserChecklist({
                   )}
                 </span>
                 <span
-                  className={`inline-block text-[0.7rem] transition-transform ${isExpanded ? "rotate-180" : ""
-                    }`}
+                  className={`inline-block text-[0.7rem] transition-transform ${isExpanded ? "rotate-180" : ""}`}
                   aria-hidden
                 >
                   ▼
@@ -223,9 +263,9 @@ function UserChecklist({
                     <TaskRow
                       key={node.id}
                       node={node}
-                      getChecked={getChecked}
+                      getValue={getValue}
                       disabled={!canEdit}
-                      onToggle={onToggle}
+                      onValueChange={onValueChange}
                     />
                   ))}
                 </div>
@@ -320,7 +360,7 @@ export default function Home() {
     setSelectedDate(null);
   }
 
-  async function toggleTask(taskId: string, completed: boolean) {
+  async function updateValue(taskId: string, value: boolean | number | string) {
     if (!currentUser) return;
     setError(null);
 
@@ -332,7 +372,7 @@ export default function Home() {
           ...prev.checklists,
           [currentUser.id]: {
             ...prev.checklists[currentUser.id],
-            [taskId]: completed,
+            [taskId]: value,
           },
         },
       };
@@ -344,7 +384,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ taskId, completed, date: selectedDate ?? undefined }),
+        body: JSON.stringify({ taskId, value, date: selectedDate ?? undefined }),
       });
       if (!res.ok) {
         throw new Error("Failed to update checklist");
@@ -521,7 +561,7 @@ export default function Home() {
                       sections={checklist.tasksKelsey}
                       userChecklist={checklist.checklists.kelsey ?? {}}
                       canEdit={true}
-                      onToggle={toggleTask}
+                      onValueChange={updateValue}
                       headerAccentClass="border-pink-400 text-pink-500"
                     />
                     <UserChecklist
@@ -529,7 +569,7 @@ export default function Home() {
                       sections={checklist.tasksJasmin}
                       userChecklist={checklist.checklists.jasmin ?? {}}
                       canEdit={false}
-                      onToggle={toggleTask}
+                      onValueChange={updateValue}
                       headerAccentClass="border-purple-200 text-purple-600"
                     />
                   </>
@@ -540,7 +580,7 @@ export default function Home() {
                       sections={checklist.tasksJasmin}
                       userChecklist={checklist.checklists.jasmin ?? {}}
                       canEdit={true}
-                      onToggle={toggleTask}
+                      onValueChange={updateValue}
                       headerAccentClass="border-purple-200 text-purple-600"
                     />
                     <UserChecklist
@@ -548,7 +588,7 @@ export default function Home() {
                       sections={checklist.tasksKelsey}
                       userChecklist={checklist.checklists.kelsey ?? {}}
                       canEdit={false}
-                      onToggle={toggleTask}
+                      onValueChange={updateValue}
                       headerAccentClass="border-pink-400 text-pink-500"
                     />
                   </>

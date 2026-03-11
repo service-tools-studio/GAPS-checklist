@@ -33,17 +33,20 @@ export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as
     | {
         taskId?: string;
-        completed?: boolean;
+        value?: boolean | number | string;
         date?: string;
       }
     | null;
 
   const taskId = body?.taskId;
-  const completed = body?.completed;
+  const value = body?.value;
   const dateKey = body?.date || getTodayKey();
 
-  if (typeof taskId !== "string" || typeof completed !== "boolean") {
+  if (typeof taskId !== "string") {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  }
+  if (value === undefined || (typeof value !== "boolean" && typeof value !== "number" && typeof value !== "string")) {
+    return NextResponse.json({ error: "Invalid payload: value required" }, { status: 400 });
   }
 
   const validIds = new Set(getAllTaskIdsForUser(userId));
@@ -55,7 +58,7 @@ export async function POST(request: Request) {
     dateKey,
     userId,
     taskId,
-    completed,
+    value,
   });
 
   const users = getUsers();

@@ -18,7 +18,7 @@ export async function getChecklistStateFromSupabase(
   for (const row of rows ?? []) {
     const uid = row.user_id as UserId;
     if (uid === "jasmin" || uid === "kelsey") {
-      state[uid] = (row.completed as Record<string, boolean>) ?? {};
+      state[uid] = (row.completed as Record<string, boolean | number | string>) ?? {};
     }
   }
   return state;
@@ -27,7 +27,7 @@ export async function getChecklistStateFromSupabase(
 export async function upsertChecklistStateInSupabase(
   dateKey: string,
   userId: UserId,
-  completed: Record<string, boolean>
+  completed: Record<string, boolean | number | string>
 ): Promise<void> {
   const supabase = getSupabase();
   const { error } = await supabase.from(TABLE).upsert(
